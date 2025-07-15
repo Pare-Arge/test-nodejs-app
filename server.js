@@ -12,6 +12,7 @@ app.get('/', (req, res) => {
     <p>Docker build test: ${Date.now()}</p>
     <p>🎯 CNI Fixed - Build: ${Date.now()}</p>
     <p>🎯 Image tag fixed - Build: ${Date.now()}</p>
+    <p>Latest build: ${Date.now()}</p>
   `);
 });
 
