@@ -11,6 +11,7 @@ app.get('/', (req, res) => {
     <p style="color: green;">✅ Automatic deployment working!</p>
     <p>Docker build test: ${Date.now()}</p>
     <p>🎯 CNI Fixed - Build: ${Date.now()}</p>
+    <p>🎯 CNI Fixed - Build: ${Date.now()}</p>
   `);
 });
 
