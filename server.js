@@ -10,6 +10,7 @@ app.get('/', (req, res) => {
     <p>Build triggered by webhook!</p>
     <p style="color: green;">✅ Automatic deployment working!</p>
     <p>Docker build test: ${Date.now()}</p>
+    <p>🎯 CNI Fixed - Build: ${Date.now()}</p>
   `);
 });
 
