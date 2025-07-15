@@ -4,9 +4,10 @@ const port = 3000;
 
 app.get('/', (req, res) => {
   res.send(`
-    <h1>🚀 Test Node.js App</h1>
+    <h1>🚀 Test Node.js App v2</h1>
     <p>Deployed via Pare PaaS!</p>
-    <p>Time: ${new Date().toISOString()}</p>
+    <p>Updated: ${new Date().toISOString()}</p>
+    <p>Build triggered by webhook!</p>
   `);
 });
 
