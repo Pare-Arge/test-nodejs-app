@@ -8,6 +8,7 @@ app.get('/', (req, res) => {
     <p>Deployed via Pare PaaS!</p>
     <p>Updated: ${new Date().toISOString()}</p>
     <p>Build triggered by webhook!</p>
+    <p style="color: green;">✅ Automatic deployment working!</p>
   `);
 });
 
