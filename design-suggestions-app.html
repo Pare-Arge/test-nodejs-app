@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UX Design Suggestions Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            font-weight: 300;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.8;
+            font-size: 1.1rem;
+        }
+
+        .form-section {
+            padding: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+            font-size: 1rem;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+            background: white;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .generate-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 16px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            margin-top: 10px;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .generate-btn:active {
+            transform: translateY(0);
+        }
+
+        .generate-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .results-section {
+            padding: 0 40px 40px;
+            display: none;
+        }
+
+        .results-section.visible {
+            display: block;
+        }
+
+        .results-box {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 25px;
+            margin-top: 20px;
+            position: relative;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .results-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .copy-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.2s ease;
+        }
+
+        .copy-btn:hover {
+            background: #218838;
+        }
+
+        .json-output {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 6px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            overflow-x: auto;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .loading {
+            text-align: center;
+            color: #6c757d;
+            font-style: italic;
+            padding: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                margin: 10px;
+                border-radius: 8px;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .form-section {
+                padding: 30px 20px;
+            }
+            
+            .results-section {
+                padding: 0 20px 30px;
+            }
+            
+            .results-box {
+                padding: 20px;
+            }
+        }
+
+        .highlight {
+            color: #667eea;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎨 UX Design Suggestions</h1>
+            <p>Generate color, typography & architecture recommendations for your product</p>
+        </div>
+
+        <div class="form-section">
+            <form id="designForm">
+                <div class="form-group">
+                    <label for="productType">Product Type</label>
+                    <select id="productType" required>
+                        <option value="">Select product type...</option>
+                        <option value="e-commerce">E-commerce Platform</option>
+                        <option value="saas">SaaS Application</option>
+                        <option value="mobile-app">Mobile App</option>
+                        <option value="landing-page">Landing Page</option>
+                        <option value="blog">Blog/Content Site</option>
+                        <option value="portfolio">Portfolio Site</option>
+                        <option value="dashboard">Analytics Dashboard</option>
+                        <option value="social-media">Social Media Platform</option>
+                        <option value="educational">Educational Platform</option>
+                        <option value="healthcare">Healthcare Application</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="targetAudience">Target Audience</label>
+                    <input type="text" id="targetAudience" placeholder="e.g., Young professionals, Tech enthusiasts, Small business owners" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="style">Design Style</label>
+                    <select id="style" required>
+                        <option value="">Select design style...</option>
+                        <option value="modern-minimal">Modern Minimal</option>
+                        <option value="bold-vibrant">Bold & Vibrant</option>
+                        <option value="professional-corporate">Professional Corporate</option>
+                        <option value="creative-artistic">Creative & Artistic</option>
+                        <option value="warm-friendly">Warm & Friendly</option>
+                        <option value="clean-medical">Clean Medical</option>
+                        <option value="dark-mode">Dark Mode</option>
+                        <option value="retro-vintage">Retro Vintage</option>
+                        <option value="luxury-premium">Luxury Premium</option>
+                        <option value="playful-fun">Playful & Fun</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="generate-btn" id="generateBtn">
+                    ✨ Generate Design Suggestions
+                </button>
+            </form>
+        </div>
+
+        <div class="results-section" id="resultsSection">
+            <div class="results-box">
+                <div class="results-header">
+                    <div class="results-title">Design Recommendations</div>
+                    <button class="copy-btn" id="copyBtn">📋 Copy JSON</button>
+                </div>
+                <div class="json-output" id="jsonOutput"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const designSuggestions = {
+            'e-commerce': {
+                'modern-minimal': {
+                    colors: {
+                        primary: '#2563eb',
+                        secondary: '#64748b',
+                        accent: '#f59e0b',
+                        neutral: '#f8fafc',
+                        text: '#1e293b'
+                    },
+                    typography: {
+                        headings: 'Inter',
+                        body: 'Source Sans Pro',
+                        size_scale: '1.125',
+                        line_height: '1.6'
+                    },
+                    layout: {
+                        grid: '12-column responsive',
+                        spacing: '8px base unit',
+                        max_width: '1200px',
+                        focus_areas: ['product showcase', 'clear CTA buttons', 'trust indicators']
+                    }
+                },
+                'bold-vibrant': {
+                    colors: {
+                        primary: '#dc2626',
+                        secondary: '#7c3aed',
+                        accent: '#f59e0b',
+                        neutral: '#ffffff',
+                        text: '#111827'
+                    },
+                    typography: {
+                        headings: 'Poppins',
+                        body: 'Open Sans',
+                        size_scale: '1.2',
+                        line_height: '1.5'
+                    },
+                    layout: {
+                        grid: 'asymmetrical with hero sections',
+                        spacing: '12px base unit',
+                        max_width: '1400px',
+                        focus_areas: ['large product images', 'animated CTAs', 'social proof']
+                    }
+                }
+            },
+            'saas': {
+                'modern-minimal': {
+                    colors: {
+                        primary: '#6366f1',
+                        secondary: '#8b5cf6',
+                        accent: '#10b981',
+                        neutral: '#f9fafb',
+                        text: '#374151'
+                    },
+                    typography: {
+                        headings: 'Inter',
+                        body: 'System UI',
+                        size_scale: '1.125',
+                        line_height: '1.7'
+                    },
+                    layout: {
+                        grid: 'sidebar + main content',
+                        spacing: '8px base unit',
+                        max_width: '100vw',
+                        focus_areas: ['data visualization', 'navigation hierarchy', 'feature highlights']
+                    }
+                },
+                'professional-corporate': {
+                    colors: {
+                        primary: '#1f2937',
+                        secondary: '#374151',
+                        accent: '#3b82f6',
+                        neutral: '#f3f4f6',
+                        text: '#111827'
+                    },
+                    typography: {
+                        headings: 'Source Sans Pro',
+                        body: 'Open Sans',
+                        size_scale: '1.125',
+                        line_height: '1.6'
+                    },
+                    layout: {
+                        grid: 'structured dashboard layout',
+                        spacing: '8px base unit',
+                        max_width: '1440px',
+                        focus_areas: ['data tables', 'status indicators', 'workflow clarity']
+                    }
+                }
+            }
+        };
+
+        function generateSuggestions(productType, targetAudience, style) {
+            const baseTemplate = designSuggestions[productType]?.[style] || {
+                colors: {
+                    primary: '#3b82f6',
+                    secondary: '#64748b',
+                    accent: '#f59e0b',
+                    neutral: '#f8fafc',
+                    text: '#1e293b'
+                },
+                typography: {
+                    headings: 'Inter',
+                    body: 'Source Sans Pro',
+                    size_scale: '1.125',
+                    line_height: '1.6'
+                },
+                layout: {
+                    grid: '12-column responsive',
+                    spacing: '8px base unit',
+                    max_width: '1200px',
+                    focus_areas: ['user engagement', 'clear navigation', 'content hierarchy']
+                }
+            };
+
+            return {
+                project_info: {
+                    product_type: productType,
+                    target_audience: targetAudience,
+                    design_style: style,
+                    generated_at: new Date().toISOString()
+                },
+                color_palette: {
+                    ...baseTemplate.colors,
+                    usage_notes: {
+                        primary: "Main brand color for CTAs and important elements",
+                        secondary: "Supporting elements and text",
+                        accent: "Highlights, success states, and special actions",
+                        neutral: "Backgrounds and subtle elements",
+                        text: "Main text color for optimal readability"
+                    }
+                },
+                typography: {
+                    ...baseTemplate.typography,
+                    recommendations: {
+                        heading_weights: "600-700 for emphasis",
+                        body_weight: "400 for readability",
+                        hierarchy: "H1: 2.5rem, H2: 2rem, H3: 1.5rem, Body: 1rem"
+                    }
+                },
+                information_architecture: {
+                    ...baseTemplate.layout,
+                    audience_considerations: `Optimized for ${targetAudience}`,
+                    accessibility: {
+                        contrast_ratio: "WCAG AA compliant (4.5:1 minimum)",
+                        font_size: "Minimum 16px for body text",
+                        interactive_elements: "Minimum 44px touch targets"
+                    }
+                },
+                ux_recommendations: {
+                    primary_actions: "Use primary color for main CTAs",
+                    visual_hierarchy: "Create clear information hierarchy with typography scale",
+                    whitespace: "Generous spacing for better cognitive load",
+                    responsive_design: "Mobile-first approach with progressive enhancement"
+                }
+            };
+        }
+
+        document.getElementById('designForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const productType = document.getElementById('productType').value;
+            const targetAudience = document.getElementById('targetAudience').value;
+            const style = document.getElementById('style').value;
+            
+            if (!productType || !targetAudience || !style) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            const generateBtn = document.getElementById('generateBtn');
+            const resultsSection = document.getElementById('resultsSection');
+            const jsonOutput = document.getElementById('jsonOutput');
+            
+            // Show loading state
+            generateBtn.disabled = true;
+            generateBtn.textContent = '🔄 Generating...';
+            resultsSection.classList.add('visible');
+            jsonOutput.innerHTML = '<div class="loading">Generating your personalized design suggestions...</div>';
+            
+            // Simulate AI processing time
+            setTimeout(() => {
+                const suggestions = generateSuggestions(productType, targetAudience, style);
+                jsonOutput.textContent = JSON.stringify(suggestions, null, 2);
+                
+                generateBtn.disabled = false;
+                generateBtn.textContent = '✨ Generate Design Suggestions';
+            }, 1500);
+        });
+
+        document.getElementById('copyBtn').addEventListener('click', function() {
+            const jsonOutput = document.getElementById('jsonOutput');
+            const text = jsonOutput.textContent;
+            
+            navigator.clipboard.writeText(text).then(function() {
+                const btn = document.getElementById('copyBtn');
+                const originalText = btn.textContent;
+                btn.textContent = '✅ Copied!';
+                btn.style.background = '#28a745';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '#28a745';
+                }, 2000);
+            }).catch(function() {
+                alert('Failed to copy to clipboard');
+            });
+        });
+    </script>
+</body>
+</html>
